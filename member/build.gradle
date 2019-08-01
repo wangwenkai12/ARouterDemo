@@ -1,13 +1,19 @@
-apply plugin: 'com.android.application'
+if (MEMBER_IS_APPLICATION.toBoolean()) {
+    apply plugin: 'com.android.application'
+} else {
+    apply plugin: 'com.android.library'
+}
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion COMPILER_SDK_VERSION.toInteger()
 
 
     defaultConfig {
-        applicationId "com.example.member"
-        minSdkVersion 21
-        targetSdkVersion 28
+        if (MEMBER_IS_APPLICATION.toBoolean()) {
+            applicationId "com.example.member"
+        }
+        minSdkVersion MIN_SDK_VERSION.toInteger()
+        targetSdkVersion TAR_SDK_VERSION.toInteger()
         versionCode 1
         versionName "1.0"
 
@@ -22,6 +28,16 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            if (MEMBER_IS_APPLICATION.toBoolean()) {
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+            } else {
+                manifest.srcFile 'src/main/manifest/AndroidManifest.xml'
+            }
+        }
+    }
+
 }
 
 dependencies {
@@ -32,4 +48,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation project(path: ':arouter')
 }
